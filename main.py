@@ -73,8 +73,10 @@ def main():
     try:
         download_data()
         records = read_data()
-        filtered = get_user_filter(records)
-        display_records(filtered)
+        while True:
+            filtered = get_user_filter(records)
+            display_records(filtered)
+            input("\nPress Enter to continue...")
     finally:
         delete_data()
 
