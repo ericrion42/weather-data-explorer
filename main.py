@@ -37,6 +37,32 @@ def read_data():
                 continue
     return records
 
+def display_summary(records):
+    if len(records) == 0:
+        return
+    
+    temps_max = [r["tmax"] for r in records]
+    temps_min = [r["tmin"] for r in records]
+    precip = [r["prcp"] for r in records]
+
+    hottest = max(temps_max)              
+    coldest = min(temps_min)             
+    avg_high = sum(temps_max) / len(temps_max)
+    avg_low = sum(temps_min) / len(temps_min)
+    total_precip = sum(precip)
+    rainy_days = len([p for p in precip if p > 0])
+
+    hottest_day = next(r for r in records if r["tmax"] == hottest)
+    coldest_day = next(r for r in records if r["tmin"] == coldest)
+
+    print(f"\n{YELLOW}--- Summary ---{RESET}")
+    print(f"Hottest day:       {RED}{hottest_day['date']} ({hottest:.1f}°F){RESET}")
+    print(f"Coldest day:       {GREEN}{coldest_day['date']} ({coldest:.1f}°F){RESET}")
+    print(f"Average high:      {YELLOW}{avg_high:.1f}°F{RESET}")
+    print(f"Average low:       {YELLOW}{avg_low:.1f}°F{RESET}")
+    print(f"Total precip:      {YELLOW}{total_precip:.2f} in{RESET}")
+    print(f"Rainy days:        {YELLOW}{rainy_days} days{RESET}")
+
 def display_records(records):
     page_size = 20
     total = len(records)
@@ -105,6 +131,7 @@ def main():
         while True:
             filtered = get_user_filter(records)
             display_records(filtered)
+            display_summary(filtered)
     finally:
         delete_data()
 
