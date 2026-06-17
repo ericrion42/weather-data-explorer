@@ -21,8 +21,8 @@ def read_data():
             try:
                 record = {
                     "date": row["DATE"],
-                    "tmax": float(row["TMAX"]) / 10,
-                    "tmin": float(row["TMIN"]) / 10,
+                    "tmax": (float(row["TMAX"]) / 10) * 9/5 + 32,  # Convert to Fahrenheit
+                    "tmin": (float(row["TMIN"]) / 10) * 9/5 + 32,  # Convert to Fahrenheit
                     "prcp": float(row["PRCP"]) / 10 if row["PRCP"] else 0.0
                 }
                 records.append(record)
