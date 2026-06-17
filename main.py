@@ -3,11 +3,12 @@ import os
 import csv
 
 # Colors
-YELLOW = "\033[93m"
-RED = "\033[91m"
-ORANGE = "\033[38;5;214m"
-GREEN = "\033[92m"
-RESET = "\033[0m"
+YELLOW = "\033[93m" # Menus and inputs
+RED = "\033[91m" # Errors
+ORANGE = "\033[38;5;214m" # System notifications
+GREEN = "\033[92m" # Success messages
+BLUE = "\033[94m" # Reserved for coldest day
+RESET = "\033[0m" # Reset color
 
 # Configuration
 URL = "https://www.ncei.noaa.gov/data/global-historical-climatology-network-daily/access/USW00013874.csv"
@@ -37,6 +38,16 @@ def read_data():
                 continue
     return records
 
+def temp_color_high(temp):
+    if temp >= 90:
+        return RED
+    return RESET
+
+def temp_color_low(temp):
+    if temp <= 32:
+        return BLUE
+    return RESET    
+
 def display_summary(records):
     if len(records) == 0:
         return
@@ -55,13 +66,13 @@ def display_summary(records):
     hottest_day = next(r for r in records if r["tmax"] == hottest)
     coldest_day = next(r for r in records if r["tmin"] == coldest)
 
-    print(f"\n{YELLOW}--- Summary ---{RESET}")
-    print(f"Hottest day:       {RED}{hottest_day['date']} ({hottest:.1f}°F){RESET}")
-    print(f"Coldest day:       {GREEN}{coldest_day['date']} ({coldest:.1f}°F){RESET}")
-    print(f"Average high:      {YELLOW}{avg_high:.1f}°F{RESET}")
-    print(f"Average low:       {YELLOW}{avg_low:.1f}°F{RESET}")
-    print(f"Total precip:      {YELLOW}{total_precip:.2f} in{RESET}")
-    print(f"Rainy days:        {YELLOW}{rainy_days} days{RESET}")
+    print(f"\n{ORANGE}--- Summary ---{RESET}")
+    print(f"{YELLOW}Hottest day:{RESET}       {RED}{hottest_day['date']} ({hottest:.1f}°F){RESET}")
+    print(f"{YELLOW}Coldest day:{RESET}       {BLUE}{coldest_day['date']} ({coldest:.1f}°F){RESET}")
+    print(f"{YELLOW}Average high:{RESET}      {temp_color_high(avg_high)}{avg_high:.1f}°F{RESET}")
+    print(f"{YELLOW}Average low:{RESET}       {temp_color_low(avg_low)}{avg_low:.1f}°F{RESET}")
+    print(f"{YELLOW}Total precip:{RESET}      {total_precip:.2f} in")
+    print(f"{YELLOW}Rainy days:{RESET}        {rainy_days} days")
 
 def display_records(records):
     page_size = 20
